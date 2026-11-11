@@ -1,0 +1,593 @@
+{
+  "info": {
+    "_postman_id": "37b51c40-c1d4-4b48-b4e6-998253a8f023",
+    "name": "E2E_Commaunite",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "57122906",
+    "_collection_link": "https://go.postman.co/collection/57122906-37b51c40-c1d4-4b48-b4e6-998253a8f023?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "creation compte client 1",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Token exist\", function () {\r",
+              "    let br=pm.response.json()\r",
+              "    pm.expect(br).to.have.property(\"token\")\r",
+              "    pm.collectionVariables.set(\"token1\",br.token)\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nomComplet\": \"Jean Dupont\",\r\n  \"email\": \"{{$randomExampleEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\" \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}/v1/register/client",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "v1",
+            "register",
+            "client"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Choice Event from Explorer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\npm.test(\"Events exist in response\", function () {\r\n    let br=pm.response.json()\r\n    let size=br.events.length\r\n    pm.expect(br).to.have.property(\"events\")\r\n    let random=Math.floor(Math.random()*size)\r\n\r\n    pm.collectionVariables.set(\"event_id\",br.events[random].id)\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"page\": 1,\r\n  \"categoryId\": -1,\r\n  \"tri\": \"date\",\r\n  \"prix\": \"tous\",\r\n  \"quand\": \"tous\",\r\n  \"acces\": [\r\n  ]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}/v1/evenementExplorer",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "v1",
+            "evenementExplorer"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "publié event dans commaunité",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"verifier le mssage Événement partagé\", function () {\r",
+              "    let br=pm.response.json()\r",
+              "    pm.expect(br.message).equal(\"Événement partagé\")\r",
+              " \r",
+              "});\r",
+              "pm.test(\"verifier data exist\", function () {\r",
+              "    let br=pm.response.json()\r",
+              "    pm.expect(br).to.have.property(\"data\")\r",
+              "    pm.collectionVariables.set(\"post_id\",br.data.id)\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token1}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"even_id\": {{event_id}},\r\n  \"titre\": \"{{$randomFullName}}\",\r\n  \"contenu\": \"{{$randomLoremParagraph}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}/v1/posts/share-event",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "v1",
+            "posts",
+            "share-event"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "creation compte client 2",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Token exist\", function () {\r",
+              "    let br=pm.response.json()\r",
+              "    pm.expect(br).to.have.property(\"token\")\r",
+              "    pm.collectionVariables.set(\"token2\",br.token)\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nomComplet\": \"Jean Dupont\",\r\n  \"email\": \"{{$randomExampleEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\" \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}/v1/register/client",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "v1",
+            "register",
+            "client"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client2 like post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"check nbr_likes = 1\", function () {\r",
+              "   let br=pm.response.json()\r",
+              "    pm.expect(br).to.have.property(\"nbr_likes\")\r",
+              "    pm.expect(br.nbr_likes).equal(1)\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token2}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/v1/posts/{{post_id}}/like",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "v1",
+            "posts",
+            "{{post_id}}",
+            "like"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client2 add comment",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "pm.test(\"check nbr_comments = 1\", function () {\r",
+              "   let br=pm.response.json()\r",
+              "    pm.expect(br).to.have.property(\"nbr_comments\")\r",
+              "    pm.expect(br.nbr_comments).equal(1)\r",
+              "});\r",
+              "pm.test(\"check data\", function () {\r",
+              "   let br=pm.response.json()\r",
+              "    pm.expect(br).to.have.property(\"data\")\r",
+              "    pm.collectionVariables.set(\"comment_id\",br.data.id)\r",
+              "     \r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token2}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"contenu\": \"{{$randomLoremParagraph}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}/v1/posts/{{post_id}}/comments",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "v1",
+            "posts",
+            "{{post_id}}",
+            "comments"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client1 replies to Client2",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "pm.test(\"check nbr_comments = 2\", function () {\r",
+              "   let br=pm.response.json()\r",
+              "    pm.expect(br).to.have.property(\"nbr_comments\")\r",
+              "    pm.expect(br.nbr_comments).equal(2)\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token1}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"contenu\": \"{{$randomLoremParagraph}}\",\r\n  \"parent_id\":{{comment_id}}\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}/v1/posts/{{post_id}}/comments",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "v1",
+            "posts",
+            "{{post_id}}",
+            "comments"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 2 signale un post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"check Signalement envoyé. Merci !\", function () {\r",
+              "    let br=pm.response.json()\r",
+              "    pm.expect(br.message).equal(\"Signalement envoyé. Merci !\")\r",
+              "     \r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token2}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"motif\": \"{{$randomLoremParagraph}}\",\r\n  \"commentaire\": \"{{$randomLoremParagraph}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}/v1/posts/{{post_id}}/report",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "v1",
+            "posts",
+            "{{post_id}}",
+            "report"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Supprimer Post by client1",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"check Publication supprimée\", function () {\r",
+              "    let br=pm.response.json()\r",
+              "    pm.expect(br.message).equal(\"Publication supprimée\")\r",
+              "     \r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token1}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{url}}/v1/posts/{{post_id}}",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "v1",
+            "posts",
+            "{{post_id}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "token1",
+      "value": ""
+    },
+    {
+      "key": "token2",
+      "value": ""
+    },
+    {
+      "key": "event_id",
+      "value": ""
+    },
+    {
+      "key": "post_id",
+      "value": ""
+    },
+    {
+      "key": "comment_id",
+      "value": ""
+    }
+  ]
+}
