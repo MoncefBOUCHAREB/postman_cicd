@@ -12,7 +12,7 @@ pipeline {
                 sh 'npm --version'
             }
         }
-        stage('Check version nodejs') {
+        stage('install dep') {
             steps {
                 sh 'npm install'
             }
